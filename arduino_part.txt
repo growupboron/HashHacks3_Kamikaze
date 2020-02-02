@@ -1,0 +1,72 @@
+// Arduino pin numbers
+const int SW_pin = 2; // digital pin connected to switch output
+const int X_pin = A1; // analog pin connected to X output
+#define right 13
+#define left 12
+#define push 11
+// defines pins numbers
+const int trigPin = 9;
+const int echoPin = 10;
+const int power = 8;
+// defines variables
+long duration;
+int distance;
+#define enable 7
+
+void setup() {
+  pinMode(SW_pin, INPUT);
+  digitalWrite(SW_pin, HIGH);
+  pinMode(trigPin, OUTPUT); // Sets the trigPin as an Output
+  pinMode(echoPin, INPUT); // Sets the echoPin as an Input
+  pinMode(right, OUTPUT);
+  pinMode(left, OUTPUT);
+  pinMode(push, OUTPUT);
+  pinMode(power, OUTPUT);
+  pinMode(enable, OUTPUT);
+  digitalWrite(power, HIGH);
+  Serial.begin(9600);
+}
+
+void loop() {
+  //Code for ultrasonic.
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+
+  // Calculating the distance
+  distance = duration * 0.034 / 2;
+
+  // Prints the distance on the Serial Monitor
+  //Serial.print("Distance: ");
+  //Serial.println(distance);
+  if(distance <= 70){
+    digitalWrite(enable, HIGH);
+  }
+  else if(distance > 70){
+    digitalWrite(enable, LOW);
+  }
+
+  //Code for Joystick starts.
+  if (digitalRead(SW_pin) == LOW) {
+    digitalWrite(push, HIGH);
+  }
+  int x = analogRead(X_pin);
+  if(x > 530 && x < 1023){
+    digitalWrite(right, HIGH);
+  }
+  else if(x < 480 && x > 0){
+    digitalWrite(left, HIGH);
+  }
+  else if(x > 480 && x < 530){
+    digitalWrite(left, LOW);
+    digitalWrite(right, LOW);
+  }
+}
